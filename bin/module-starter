@@ -1,0 +1,32 @@
+#!/usr/bin/env perl
+
+sub MAIN($name, :$description) {
+    my $dir = $name.subst(/'::'/, '-', :g);
+    mkdir $dir;
+    chdir $dir;
+
+    my $desc = $description 
+            // prompt("Please enter a short description: ");;
+    my $user = qx/git config --global github.user/.chomp;
+    unless $user.chars > 0 {
+        $user = prompt("Please enter your github username: ");
+    }
+    my $token = qx/git config --global github.token/.chomp;
+    my $gitrepo = "git://github.com/$user/$dir.git";
+    given open('META.info', :w) {
+        .say:   '{';
+        .say: qq{    "name"        : "$name",};
+        .say:   '    "version"     : "*",';
+        .say: qq{    "description" : "$desc",};
+        .say:   '    "depends"     : [],';
+        .say: qq{    "source-url"  : "$gitrepo"};
+        .say:    '}';
+        .close;
+    }
+    run "git init";
+    run "git remote add origin git@github.com:$user/$dir.git";
+    if $token.chars > 0 {
+        run "curl -s -F 'login=$user' -F 'token=$token' http://github.com/api/v2/yaml/repos/create -F 'name=$dir'";
+    }
+    say "You're ready to hack. If you did not see any errors, a github repository is already created for you, and ready to commit and push to it. Have fun!";
+}

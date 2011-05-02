@@ -1,0 +1,7 @@
+{
+    "name"        : "Module::Starter",
+    "version"     : "*",
+    "description" : "The easiest way to create a Perl 6 module",
+    "depends"     : [],
+    "source-url"  : "git://github.com/tadzik/Module-Starter.git"
+}
