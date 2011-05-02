@@ -11,7 +11,6 @@ sub MAIN($name, :$description) {
     unless $user.chars > 0 {
         $user = prompt("Please enter your github username: ");
     }
-    my $token = qx/git config --global github.token/.chomp;
     my $gitrepo = "git://github.com/$user/$dir.git";
     given open('META.info', :w) {
         .say:   '{';
@@ -25,8 +24,12 @@ sub MAIN($name, :$description) {
     }
     run "git init";
     run "git remote add origin git@github.com:$user/$dir.git";
+
+    my $token = qx/git config --global github.token/.chomp;
     if $token.chars > 0 {
-        run "curl -s -F 'login=$user' -F 'token=$token' http://github.com/api/v2/yaml/repos/create -F 'name=$dir'";
+        if prompt("Create a github repo? (requires curl) [y/n]: ") ~~ /^y/ {
+            run "curl -s -F 'login=$user' -F 'token=$token' http://github.com/api/v2/yaml/repos/create -F 'name=$dir'";
+        }
     }
-    say "You're ready to hack. If you did not see any errors, a github repository is already created for you, and ready to commit and push to it. Have fun!";
+    say "You're ready to hack. The git repository is already created for you, and configured to push to $user/$dir. Have fun!";
 }
