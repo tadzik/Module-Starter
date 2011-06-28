@@ -6,4 +6,4 @@ to push to on Github.
 
 ## Example usage
 
-    module-starter Foo::Bar "this is a short description of my module"
+    module-starter --description="this is a short description of my module" Foo::Bar
