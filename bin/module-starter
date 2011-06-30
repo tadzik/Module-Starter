@@ -5,6 +5,9 @@ sub MAIN($name, :$description) {
     mkdir $dir;
     chdir $dir;
 
+    mkdir 'lib';
+    mkdir 't';
+
     my $desc = $description 
             // prompt("Please enter a short description: ");;
     my $user = qx/git config --global github.user/.chomp;
