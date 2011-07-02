@@ -2,10 +2,21 @@
 
 sub MAIN($name, :$description) {
     my $dir = $name.subst(/'::'/, '-', :g);
+
+    my @namespaces = $dir.split('-');
+
     mkdir $dir;
     chdir $dir;
 
     mkdir 'lib';
+
+    chdir 'lib';
+    if @namespaces ~~ 1 {
+    } else {
+        mkdir @namespaces[0];
+    }
+
+    chdir '..';
     mkdir 't';
 
     my $desc = $description 
