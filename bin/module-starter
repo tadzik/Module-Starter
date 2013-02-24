@@ -10,7 +10,8 @@ sub MAIN($name, :$description) {
 
     my $desc = $description 
             // prompt("Please enter a short description: ");;
-    my $user = qx/git config --global github.user/.chomp;
+    my $user = %*ENV<GITHUB_USER>
+            // qx/git config --global github.user/.chomp;
     unless $user.chars > 0 {
         $user = prompt("Please enter your github username: ");
     }
@@ -28,7 +29,8 @@ sub MAIN($name, :$description) {
     run "git init";
     run "git remote add origin git@github.com:$user/$dir.git";
 
-    my $token = qx/git config --global github.token/.chomp;
+    my $token = %*ENV<GITHUB_TOKEN>
+             // qx/git config --global github.token/.chomp;
     if $token.chars > 0 {
         if prompt("Create a github repo? (requires curl) [y/n]: ") ~~ /^y/ {
             run "curl -s -F 'login=$user' -F 'token=$token' http://github.com/api/v2/yaml/repos/create -F 'name=$dir'";
