@@ -36,3 +36,5 @@ sub MAIN($name, :$description) {
     }
     say "You're ready to hack. The git repository is already created for you, and configured to push to $user/$dir. Have fun!";
 }
+
+# vim: ft=perl6
